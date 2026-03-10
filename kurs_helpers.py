@@ -60,6 +60,239 @@ def _pruefe_variable(variablen, name, erwarteter_wert, erwarteter_typ=None):
 
     return True
 
+# ============================================================
+# WORTLISTEN UND LEXIKA
+# ============================================================
+# Enthält:
+# - GERMAN_STOPWORDS: Deutsche Stoppwortliste (entspricht NLTK)
+# - GRIMM_SENTIMENT_LEXIKON: Sentiment-Lexikon für Grimms Märchen
+# - NEGATION_TRIGGERS: Negationswörter für die Negationserkennung
+# - berechne_sentiment(): Sentiment Score berechnen
+# - berechne_sentiment_mit_negation(): Score mit Negationserkennung
+# ============================================================
+
+
+# Deutsche Stoppwortliste (entspricht nltk.corpus.stopwords.words("german"))
+GERMAN_STOPWORDS = [
+    "aber", "alle", "allem", "allen", "aller", "allerdings", "alles",
+    "also", "am", "an", "ander", "andere", "anderem", "anderen",
+    "anderer", "anderes", "anderm", "andern", "anderr", "anders",
+    "auch", "auf", "aus", "außerdem",
+    "bei", "beide", "beiden", "beider", "beiderlei", "beides",
+    "beim", "beispiel", "bekannt", "bereits", "besser", "beste",
+    "bestem", "besten", "besser", "bin", "bis", "bisher", "bist",
+    "bitte",
+    "da", "dabei", "dadurch", "dafür", "dagegen", "daher", "dahin",
+    "damals", "damit", "danach", "daneben", "dank", "dann", "daran",
+    "darauf", "daraus", "darf", "darfst", "darüber", "darum",
+    "darunter", "das", "dasselbe", "dass", "davon", "davor", "dazu",
+    "dein", "deine", "deinem", "deinen", "deiner", "deines",
+    "dem", "den", "denn", "dennoch", "der", "deren", "des",
+    "deshalb", "dessen", "dich", "die", "dies", "diese", "dieselbe",
+    "dieselben", "diesem", "diesen", "dieser", "dieses", "dir",
+    "doch", "dort", "drei", "drin", "dritte", "dritten", "dritter",
+    "drittes", "du", "dumm", "durch", "dürfen",
+    "eben", "ebenso", "ehe", "ein", "einander", "eine", "einem",
+    "einen", "einer", "einige", "einigem", "einigen", "einiger",
+    "einiges", "einmal", "er", "erst", "erste", "erstem", "ersten",
+    "erster", "erstes", "es", "etwa", "etwas", "euch", "euer",
+    "eure", "eurem", "euren", "eurer", "eures",
+    "für",
+    "ganz", "gar", "gegen", "gehen", "gemacht", "genug", "gerade",
+    "gering", "gern", "gerne", "gewesen", "gewiß", "groß", "große",
+    "großem", "großen", "großer", "großes", "grund", "gut", "guten",
+    "guter", "gutes",
+    "hab", "habe", "haben", "habt", "hast", "hat", "hatte",
+    "hätte", "her", "heraus", "herein", "hier", "hin", "hinter",
+    "hoch",
+    "ich", "ihm", "ihn", "ihnen", "ihr", "ihre", "ihrem", "ihren",
+    "ihrer", "ihres", "im", "immer", "in", "indem", "infolge",
+    "innen", "ins", "irgend", "ist",
+    "ja", "jahr", "jahre", "jahren", "je", "jede", "jedem",
+    "jeden", "jeder", "jedes", "jedoch", "jemals", "jene", "jenem",
+    "jenen", "jener", "jenes", "jetzt", "jung", "junge", "jungem",
+    "jungen", "junger", "junges",
+    "kam", "kann", "kannst", "kein", "keine", "keinem", "keinen",
+    "keiner", "keines", "klar", "klein", "kleine", "kleinem",
+    "kleinen", "kleiner", "kleines", "kommen", "konnte", "können",
+    "könnte", "kurz",
+    "lang", "lange", "langem", "langen", "langer", "langes",
+    "längst", "längstens", "lassen", "laß", "laut", "lediglich",
+    "leer", "legen", "leid", "leider", "lesen", "letzte", "letzten",
+    "leute", "licht", "lieb", "lieber", "los",
+    "machen", "macht", "mädchen", "mag", "magen", "manche",
+    "manchem", "manchen", "mancher", "mancherlei", "manchmal", "man",
+    "mehr", "mein", "meine", "meinem", "meinen", "meiner", "meines",
+    "mich", "mir", "mit", "mittel", "morgen", "morgens", "müssen",
+    "muß", "mußt", "musste",
+    "nach", "nachdem", "nachher", "nächst", "nah", "nahe", "name",
+    "natürlich", "neben", "nehmen", "nein", "neu", "neue", "neuem",
+    "neuen", "neuer", "neues", "nicht", "nichts", "nie", "niemand",
+    "nimmer", "nirgend", "nirgends", "noch", "nun", "nur",
+    "ob", "oben", "oder", "offen", "ohne",
+    "rechts", "recht", "richtig", "ruhig", "rund",
+    "schlecht", "schließen", "schlimm", "schnell", "schon",
+    "schön", "schreiben", "schuld", "schwer", "schwierig",
+    "sehen", "sehr", "seid", "sein", "seine", "seinem", "seinen",
+    "seiner", "seines", "seit", "seitdem", "selbst", "sich",
+    "sicher", "sicherlich", "sie", "sind", "so", "sofort", "sogar",
+    "solch", "solche", "solchem", "solchen", "solcher", "soll",
+    "sollen", "sollte", "sollten", "solltest", "sondern", "sonst",
+    "sorgen", "soviel", "sowie", "sprechen", "staat", "stark",
+    "statt", "steht",
+    "über", "überall", "überhaupt", "übrigens", "um", "ums",
+    "und", "uns", "unser", "unsere", "unserem", "unseren",
+    "unserer", "unseres", "unten", "unter",
+    "viel", "vielleicht", "viele", "vielem", "vielen", "vielmals",
+    "vier", "voll", "völlig", "vom", "von", "vor", "vorbei",
+    "vorher", "vorn", "vorne",
+    "wann", "warum", "was", "weder", "weil", "weit", "weiter",
+    "weitere", "weiteren", "weiteres", "welch", "welche", "welchem",
+    "welchen", "welcher", "welches", "wem", "wen", "wenig",
+    "wenige", "wenigem", "wenigen", "weniger", "wenigstens", "wenn",
+    "wer", "werde", "werden", "wessen", "wie", "wieder", "will",
+    "wir", "wird", "wirklich", "wo", "wohl", "wollen", "wollt",
+    "wollte", "wollten", "worden", "wurde", "würde", "würden",
+    "zu", "zum", "zunächst", "zur", "zurück", "zusammen",
+    "zwanzig", "zwar", "zwei", "zwischen",
+]
+
+
+# Grimm-spezifisches Sentiment-Lexikon
+# Positiv = +1, Negativ = -1
+GRIMM_SENTIMENT_LEXIKON = {
+    # --- POSITIV (+1) ---
+    "gut": 1, "fromm": 1, "fleißig": 1, "gehorsam": 1, "treu": 1, "ehrlich": 1,
+    "klug": 1, "weise": 1, "gerecht": 1, "barmherzig": 1, "unschuldig": 1,
+    "rein": 1, "sanft": 1, "geduldig": 1, "demütig": 1, "tapfer": 1, "kühn": 1,
+    "beherzt": 1, "listig": 1, "schön": 1, "bildschön": 1, "wunderschön": 1,
+    "hübsch": 1, "fein": 1, "zart": 1, "weiß": 1, "gold": 1, "golden": 1,
+    "glänzend": 1, "strahlend": 1, "sauber": 1, "reinlich": 1, "geschmückt": 1,
+    "herrlich": 1, "glück": 1, "glücklich": 1, "froh": 1, "fröhlich": 1,
+    "vergnügt": 1, "freude": 1, "lust": 1, "lustig": 1, "selig": 1,
+    "zufrieden": 1, "gesund": 1, "satt": 1,
+    "lebendig": 1, "geliebt": 1, "reich": 1, "reichtum": 1,
+    "schatz": 1, "edelstein": 1, "perle": 1, "könig": 1, "königin": 1,
+    "prinz": 1, "königstochter": 1, "schloss": 1, "hochzeit": 1, "braut": 1,
+    "fest": 1, "mahl": 1, "geschenk": 1, "segen": 1, "himmel": 1,
+    "erlösung": 1, "gewinn": 1, "lachen": 1, "lächeln": 1, "singen": 1,
+    "tanzen": 1, "springen": 1, "küssen": 1, "streicheln": 1, "trösten": 1,
+    "retten": 1, "erlösen": 1, "helfen": 1, "schenken": 1, "belohnen": 1,
+    "gelingen": 1, "siegen": 1, "hold": 1, "lieblich": 1, "wacker": 1,
+    "stattlich": 1, "gemach": 1,
+
+    # --- NEGATIV (-1) ---
+    "böse": -1, "schlecht": -1, "gottlos": -1, "falsch": -1, "tückisch": -1,
+    "faul": -1, "hochmütig": -1, "stolz": -1, "neidisch": -1, "missgünstig": -1,
+    "gierig": -1, "geizig": -1, "grausam": -1, "hart": -1, "unbarmherzig": -1,
+    "wild": -1, "garstig": -1, "dumm": -1, "einfältig": -1, "hässlich": -1,
+    "schwarz": -1, "finster": -1, "dunkel": -1, "schmutzig": -1, "rußig": -1,
+    "alt": -1, "krank": -1, "blass": -1, "widerlich": -1, "angst": -1,
+    "furcht": -1, "schreck": -1, "entsetzen": -1, "bange": -1, "traurig": -1,
+    "betrübt": -1, "einsam": -1, "verlassen": -1, "arm": -1, "elend": -1,
+    "not": -1, "jammer": -1, "kummer": -1, "sorge": -1, "zorn": -1, "wut": -1,
+    "hass": -1, "neid": -1, "schmerz": -1, "qual": -1, "pein": -1,
+    "hunger": -1, "durst": -1, "müde": -1, "erschöpft": -1, "tod": -1,
+    "tot": -1, "sterben": -1, "leiche": -1, "sarg": -1, "grab": -1,
+    "blut": -1, "wunde": -1, "gift": -1, "giftig": -1, "strafe": -1,
+    "gefängnis": -1, "kerker": -1, "fessel": -1, "hölle": -1, "teufel": -1,
+    "hexe": -1, "wolf": -1, "ungeheuer": -1, "wald": -1, "weinen": -1,
+    "klagen": -1, "jammern": -1, "schreien": -1, "tob": -1, "schlagen": -1,
+    "stoßen": -1, "hauen": -1, "töten": -1, "umbringen": -1, "fressen": -1,
+    "verschlingen": -1, "beißen": -1, "kratzen": -1, "lügen": -1,
+    "betrügen": -1, "stehlen": -1, "rauben": -1, "quälen": -1, "leiden": -1,
+    "fliehen": -1, "verirren": -1, "verstoßen": -1, "auslachen": -1,
+    "spotten": -1, "grämen": -1, "herzeleid": -1, "drangsal": -1,
+    "arg": -1, "unheil": -1, "verderben": -1,
+}
+
+
+# Negationswörter — drehen das Vorzeichen von Sentiment-Wörtern um
+NEGATION_TRIGGERS = {
+    # Standard-Negationen
+    "nicht", "nichts",
+    # "Kein"-Familie
+    "kein", "keine", "keinen", "keinem", "keiner", "keines", "keins",
+    # Zeit & Person
+    "nie", "niemals", "nimmer", "nimmermehr",
+    "niemand", "nirgends", "nirgendwo",
+    # Konjunktionen
+    "weder",
+}
+
+
+# ============================================================
+# ANALYSE-FUNKTIONEN
+# ============================================================
+
+def berechne_sentiment(wort_liste, lexikon=None):
+    """
+    Berechnet den Sentiment Score einer Wortliste (ohne Negationserkennung).
+
+    Parameter:
+        wort_liste (list): Liste von Wörtern
+        lexikon (dict): Sentiment-Lexikon (Standard: GRIMM_SENTIMENT_LEXIKON)
+
+    Rückgabe:
+        tuple: (score, gefundene_woerter)
+    """
+    if lexikon is None:
+        lexikon = GRIMM_SENTIMENT_LEXIKON
+
+    score = 0
+    gefundene = []
+
+    for wort in wort_liste:
+        if wort in lexikon:
+            score += lexikon[wort]
+            gefundene.append(wort)
+
+    return score, gefundene
+
+
+def berechne_sentiment_mit_negation(wort_liste, lexikon=None, negationen=None):
+    """
+    Berechnet den Sentiment Score mit Negationserkennung.
+
+    Wenn ein Negationswort (z.B. "nicht", "kein") innerhalb von 3 Wörtern
+    VOR einem Sentiment-Wort steht, wird das Vorzeichen umgedreht.
+    Beispiel: "nicht böse" → +1 statt -1
+
+    Parameter:
+        wort_liste (list): Liste von Wörtern
+        lexikon (dict): Sentiment-Lexikon (Standard: GRIMM_SENTIMENT_LEXIKON)
+        negationen (set): Negationswörter (Standard: NEGATION_TRIGGERS)
+
+    Rückgabe:
+        tuple: (score, details)
+        details ist eine Liste von Tupeln: (wort, originalwert, negiert, endwert)
+    """
+    if lexikon is None:
+        lexikon = GRIMM_SENTIMENT_LEXIKON
+    if negationen is None:
+        negationen = NEGATION_TRIGGERS
+
+    score = 0
+    details = []
+
+    for i, wort in enumerate(wort_liste):
+        if wort in lexikon:
+            wert = lexikon[wort]
+
+            # Schaue die 3 Wörter DAVOR an
+            vorherige = wort_liste[max(0, i - 3):i]
+            ist_negiert = any(neg in negationen for neg in vorherige)
+
+            if ist_negiert:
+                endwert = wert * -1
+            else:
+                endwert = wert
+
+            score += endwert
+            details.append((wort, wert, ist_negiert, endwert))
+
+    return score, details
+
 
 # ============================================================
 # Kapitel 01: Variablen und Zahlentypen
