@@ -1052,10 +1052,7 @@ def pruefe_09_aufgabe_2():
 # ============================================================
 # Kapitel 10: Abschlussprüfung Teil II
 # ============================================================
-# ⚠️ HINWEIS:
-# Diese Prüffunktion ist als Selbstprüfung konzipiert.
-# Gleiche Frage wie bei Kapitel 06: Selbstprüfung, Abgabe, oder beides?
-# ============================================================
+
 
 def pruefe_10_abschlusspruefung():
     """Prüft die Abschlussprüfung Teil II."""
@@ -1133,3 +1130,36 @@ def pruefe_10_abschlusspruefung():
     print()
     print("  🎉 Abschlussprüfung Teil II abgeschlossen!")
     print("     Vergessen Sie nicht, Aufgabe 4 (Reflexion) zu beantworten.")
+
+    # ============================================================
+# Kapitel 11: Bonus — Ironie
+# ============================================================
+
+def erklaere_11_fazit():
+    """Fazit: Was lernen wir aus Hans im Glück?"""
+    print("  ℹ️ Was lernen wir daraus?")
+    print()
+    print("  Unsere Sentimentanalyse zählt Wörter. Sie erkennt, ob ein Wort")
+    print("  positiv oder negativ ist. Aber sie versteht nicht, was der Text")
+    print("  damit MEINT.")
+    print()
+    print("  Ironie funktioniert gerade dadurch, dass das Gesagte und das")
+    print("  Gemeinte auseinanderfallen. 'Hans im Glück' benutzt durchgehend")
+    print("  positive Sprache — aber die Geschichte erzählt eigentlich vom Verlust.")
+    print()
+    print("  Python sieht die positiven Wörter und schließt: positives Märchen.")
+    print("  Ein Mensch liest die gleichen Wörter und erkennt: Hier stimmt etwas nicht.")
+    print()
+    print("  Das ist eine fundamentale Grenze von computerbasierten Textanalysen:")
+    print("  - Wörterzählen erfasst die Oberfläche eines Textes.")
+    print("  - Bedeutung, Ironie und Kontext erfordern tieferes Verständnis.")
+    print("  - Auch fortgeschrittene Verfahren tun sich mit Ironie schwer —")
+    print("    es ist eines der ungelösten Probleme der Computerlinguistik.")
+    print()
+    print("  Das heißt nicht, dass unsere Analyse nutzlos ist! Sie gibt wertvolle")
+    print("  erste Einblicke und kann Muster in großen Textmengen aufzeigen.")
+    print("  Aber sie ersetzt das genaue Lesen nicht — sie ergänzt es.")
+    print()
+    print("  📖 Die beste Analyse entsteht, wenn Mensch und Computer")
+    print("     zusammenarbeiten: Python liefert die Zahlen,")
+    print("     der Mensch liefert das Verständnis.")
