@@ -1,0 +1,25 @@
+format: jb-book
+root: intro
+
+parts:
+  - caption: Teil 1
+    chapters:
+      - file: Teil_1/01_Variablen_ZahlenTypen.ipynb
+      - file: Teil_1/02_Strings_Booleans.ipynb
+      - file: Teil_1/03_Listen.ipynb
+      - file: Teil_1/04_Texte_einlesen_und_Text_bereinigen.ipynb
+      - file: Teil_1/05_Text_bereinigen_Schleife_Bedingung.ipynb
+      - file: Teil_1/06_Abschlusspruefung_Teil_I.ipynb
+      
+
+  - caption: Teil 2
+    chapters:
+      - file: Teil_2/07_Emotionale_Woerter.ipynb
+      - file: Teil_2/08_Sentimentanalyse_vertiefen.ipynb
+
+
+  - caption: Teil 3
+    chapters:
+      - file: Teil_3/09_Visualisierung.ipynb
+      - file: Teil_3/10_Abschlusspruefung_Teil_II.ipynb
+      - file: Teil_3/11_Bonuseinheit.ipynb
