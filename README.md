@@ -8,6 +8,10 @@ Sentimentanalyse von Grimms Märchen als Einstieg in die Programmierung.
 Dieser Kurs wird über den NFDI JupyterHub bereitgestellt. 
 Den Zugangslink erhalten Sie über Moodle.
 
+
+```{tableofcontents}
+```
+
 ## Lizenz
 
 CC BY 4.0 — Sarah Ann Stock, Universitätsbibliothek Duisburg-Essen
